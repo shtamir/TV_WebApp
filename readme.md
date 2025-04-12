@@ -1,4 +1,4 @@
-# Yakinton 46 Digital Billboard
+# Yakinton 46 Digital Billboard - 2
 
 A web application designed to run on an Android TV web browser and display various types of information in a billboard-style format.
 

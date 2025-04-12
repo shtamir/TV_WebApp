@@ -1,0 +1,15 @@
+[dev]
+  port = 8888
+  envFiles = [".env"]
+
+[build]
+  publish = "."  # root folder with index.html
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"  # Required for ES modules (like your `export async function handler`)
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

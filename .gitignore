@@ -3,3 +3,6 @@ images/carousel/other/
 images/carousel/other - Copy/
 styles.css
 *.zip
+
+# Local Netlify folder
+.netlify

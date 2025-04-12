@@ -7,12 +7,37 @@
     <button onclick="leave()">Leave</button>
 
     <script>
+
+      const NETLIFY_BASE = 'https://yakinton-46.netlify.app/.netlify/functions';
+      const LOCAL_API_BASE = "http://localhost:8888/.netlify/functions";
+
+      // Determine which base URL to use based on an environment variable or condition
+      //const API_BASE = process.env.USE_REMOTE === 'true' ? NETLIFY_BASE : LOCAL_API_BASE;
+      const API_BASE = NETLIFY_BASE; // or LOCAL_API_BASE based on your condition
+      //console.log(`Using API base: ${API_BASE}`);
+
+      // Check if the current page is being served from localhost or a specific domain
+      // If so, use the local API endpoint; otherwise, use the production endpoint
+      // This function is called when the user clicks the "Join" button
       function join() {
+        //fetch('https://yakinton-46.netlify.app/.netlify/functions/ping', { method: 'POST' });
+        fetch(`${API_BASE}/ping`, { method: 'POST' });
+      }
+
+      // Check if the current page is being served from localhost or a specific domain
+      // If so, use the local API endpoint; otherwise, use the production endpoint
+      // This function is called when the user clicks the "Leave" button
+      function leave() {
+        fetch(`${API_BASE}/reset`, { method: 'POST' });
+        //fetch('https://yakinton-46.netlify.app/.netlify/functions/reset', { method: 'POST' });
+      }
+
+      function join_prev() {
         fetch('/api/admin-ping', { method: 'POST' })
           .then(() => alert("Joined TV mode"));
       }
 
-      function leave() {
+      function leave_prev() {
         fetch('/api/admin-reset', { method: 'POST' })
           .then(() => alert("Left TV mode"));
       }

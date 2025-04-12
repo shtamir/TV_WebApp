@@ -127,8 +127,30 @@ document.addEventListener('DOMContentLoaded', updateResolution);*/
 // Compare this snippet from js/data-sync.js:
 window.addEventListener('resize', updateResolution);
 
+const NETLIFY_BASE = 'https://yakinton-46.netlify.app/.netlify/functions';
+const LOCAL_API_BASE = "http://localhost:8888/.netlify/functions";
+
+// Determine which base URL to use based on an environment variable or condition
+//const API_BASE = process.env.USE_REMOTE === 'true' ? NETLIFY_BASE : LOCAL_API_BASE;
+const API_BASE = NETLIFY_BASE;
+//console.log(`Using API base: ${API_BASE}`);
+
+
 // Check for Admin presence
-function checkForAdminPresence() {
+function checkForiPhonePresence() {
+  fetch(`${API_BASE}/status`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.iphone_present) {
+        switchToAlternateView();
+      } else {
+        restoreNormalView();
+      }
+    })
+    .catch(err => console.warn("Presence check failed:", err));
+}
+
+function checkForAdminPresence_old() {
   fetch("https://v0-tvw-eb-app-os.vercel.app/api/admin-status")
     .then(res => res.json())
     .then(data => {
