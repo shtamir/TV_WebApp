@@ -2,6 +2,8 @@
 
 A web application designed to run on an Android TV web browser and display various types of information in a billboard-style format.
 
+Lobby TV resolution is 1024x577
+
 [Link](https://tv-web-app-mu.vercel.app)
 
 ## Features
