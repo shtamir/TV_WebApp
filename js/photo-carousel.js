@@ -55,7 +55,7 @@ const photoSchedule_regular = {
   },
 };
 
-const photoSchedule = {
+const photoSchedule_pesah = {
   "Sunday": {
     "morning": ["images/carousel/holydays/pesah/pesah_01.jpg", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -92,6 +92,45 @@ const photoSchedule = {
     "evening": ["images/carousel/holydays/pesah/pesah_03.jpg", "images/carousel/goodevening_01.jpg", "images/carousel/holydays/pesah/pesah_04.jpg", "images/carousel/weekend_01.jpg"]
   },
 };
+
+photoSchedule = {
+  "Sunday": {
+    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg"]
+  },
+  "Monday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Tuesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Wednesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Thursday": {
+    "morning": ["images/carousel/holydays/holocaust/Holocaust_02.jpg"],
+    "noon": ["images/carousel/holydays/holocaust/Holocaust_02.jpg"],
+    "evening": ["images/carousel/holydays/holocaust/Holocaust_01.jpeg"]
+  },
+  "Friday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+  "Saturday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+};
+
 /*
 const photoSchedule = {
   "Sunday": {
