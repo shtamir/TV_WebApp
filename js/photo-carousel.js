@@ -17,7 +17,7 @@
 }; */
 
 // Configuration for day-wise and time-wise photo display
-const photoSchedule_regular = {
+const photoSchedule = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -93,7 +93,7 @@ const photoSchedule_pesah = {
   },
 };
 
-photoSchedule = {
+photoSchedule_holocaust = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
