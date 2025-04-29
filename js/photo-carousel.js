@@ -17,7 +17,7 @@
 }; */
 
 // Configuration for day-wise and time-wise photo display
-const photoSchedule = {
+const photoSchedule_regular = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -131,6 +131,45 @@ photoSchedule_holocaust = {
   },
 };
 
+// photoSchedule_memorial_day
+const photoSchedule = {
+  "Sunday": {
+    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg"]
+  },
+  "Monday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Tuesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/memorial_day/1.jpg"]
+  },
+  "Wednesday": {
+    "morning": ["images/memorial_day/1.jpg"],
+    "noon": ["images/memorial_day/1.jpg"],
+    "evening": ["images/independence_day/1.jpg", "images/independence_day/2.jpg", "images/independence_day/3.jpg"]
+  },
+  "Thursday": {
+    "morning": ["images/independence_day/1.jpg", "images/independence_day/2.jpg", "images/independence_day/3.jpg"],
+    "noon": ["images/independence_day/1.jpg", "images/independence_day/2.jpg", "images/independence_day/3.jpg"],
+    "evening": ["images/independence_day/1.jpg", "images/independence_day/2.jpg", "images/independence_day/3.jpg"]
+  },
+  "Friday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+  "Saturday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+};
+
 /*
 const photoSchedule = {
   "Sunday": {
@@ -176,7 +215,7 @@ function getTimeSlot() {
   const hour = now.getHours();
   console.log(`getTimeSlot(): hour:${hour}, now: ${now}`);
   if (hour >= 5 && hour < 12) return "morning";  // 05:00 - 11:59
-  if (hour >= 12 && hour < 18) return "noon";    // 12:00 - 17:59
+  if (hour >= 12 && hour < 20) return "noon";    // 12:00 - 17:59
   return "evening";                              // 18:00 - 04:59
 }
 
