@@ -146,7 +146,7 @@ const photoSchedule = {
   "Tuesday": {
     "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/holydays/memorial_day/1.jpg"]
+    "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
   },
   "Wednesday": {
     "morning": ["images/holydays/memorial_day/1.jpg"],
