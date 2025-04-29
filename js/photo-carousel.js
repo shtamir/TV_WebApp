@@ -149,14 +149,14 @@ const photoSchedule = {
     "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
   },
   "Wednesday": {
-    "morning": ["images/holydays/memorial_day/1.jpg"],
-    "noon": ["images/holydays/memorial_day/1.jpg"],
-    "evening": ["images/holydays/independence_day/1.jpg", "images/holydays/independence_day/2.jpg", "images/holydays/independence_day/3.jpg"]
+    "morning": ["images/carousel/holydays/memorial_day/1.jpg"],
+    "noon": ["images/carousel/holydays/memorial_day/1.jpg"],
+    "evening": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"]
   },
   "Thursday": {
-    "morning": ["images/holydays/independence_day/1.jpg", "images/holydays/independence_day/2.jpg", "images/holydays/independence_day/3.jpg"],
-    "noon": ["images/holydays/independence_day/1.jpg", "images/holydays/independence_day/2.jpg", "images/holydays/independence_day/3.jpg"],
-    "evening": ["images/holydays/independence_day/1.jpg", "images/holydays/independence_day/2.jpg", "images/holydays/independence_day/3.jpg"]
+    "morning": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
+    "noon": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
+    "evening": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"]
   },
   "Friday": {
     "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
