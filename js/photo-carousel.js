@@ -151,7 +151,7 @@ const photoSchedule = {
   "Wednesday": {
     "morning": ["images/carousel/holydays/memorial_day/1.jpg"],
     "noon": ["images/carousel/holydays/memorial_day/1.jpg"],
-    "evening": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"]
+    "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
   },
   "Thursday": {
     "morning": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
