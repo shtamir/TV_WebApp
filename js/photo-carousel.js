@@ -174,7 +174,7 @@ const photoSchedule_memorial_day = {
 const photoSchedule = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
+    "noon": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"],
     "evening": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"]
   },
   "Monday": {
