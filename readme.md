@@ -29,26 +29,31 @@ Lobby TV resolution is 1024x577
 ## Project Structure
 
 ```
-yakinton46/
+TV_WebApp/
 │
 ├── index.html              # Main HTML file
 ├── styles.css              # CSS styling
+├── admin.html              # Admin page
 ├── images/                 # Image assets
-│   ├── background.jpg      # Background image
-│   ├── pic1.jpeg           # Carousel photos
-│   ├── pic2.jpeg
-│   ├── ...
-│   ├── WifiQR.svg          # QR code images
-│   ├── CallQR.svg
-│   └── EmailQR.svg
+│   ├── bg/
+│   │   └── background.png  # Background image
+│   ├── carousel/           # Carousel photos
+│   ├── media-player/       # Media player icons
+│   └── qr/                 # QR code images
 ├── audio/                  # Audio files
-│   └── music_1.mp3
-└── js/                     # JavaScript files
-    ├── main.js             # Core functionality
-    ├── weather.js          # Weather integration
-    ├── news.js             # News feed integration
-    ├── data-sync.js        # Google Sheets integration
-    └── photo-carousel.js   # Photo rotation
+│   ├── music_1.mp3
+│   ├── music_2.mp3
+│   └── ...
+├── js/                     # JavaScript files
+│   ├── main.js             # Core functionality
+│   ├── weather.js          # Weather integration
+│   ├── news.js             # News feed integration
+│   ├── data-sync.js        # Google Sheets integration
+│   ├── radio-player.js     # Background music
+│   └── photo-carousel.js   # Photo rotation
+└── admin/                  # Assets for admin page
+    ├── audio/
+    └── images/
 ```
 
 ## Setup Instructions
