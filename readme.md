@@ -58,7 +58,7 @@ yakinton46/
 3. Replace the images in the `images` folder with your own
 4. Update the OpenWeatherMap API key in `weather.js` with your own
 5. Customize the city in `weather.js` to your desired location
-6. Add your own photos to the `photos` array in `photo-carousel.js`
+6. Configure your photo schedule in the Google Sheet tab referenced by `photoSheetUrl`
 7. Replace the audio file with your preferred background music
 
 ## Google Sheets Configuration
@@ -70,6 +70,14 @@ yakinton46/
 ### Todo List Sheet
 - Format: First column contains todo items
 - Publish to web as CSV
+
+### Photo Schedule Sheet
+- Each row describes either a default schedule entry or a holiday override
+- Required columns: `day_of_week`, `time_slot`, `photo_urls`
+- Optional columns: `type` (use `holiday` for overrides), `date` (ISO format `YYYY-MM-DD` or `DD/MM` for recurring annual holidays), and `holiday_name`
+- Separate multiple photo URLs in `photo_urls` with the `|` character
+- Valid time slots: `morning`, `noon`, `evening`, `night`, or `all` (applies to every slot)
+- Publish the sheet tab to the web as CSV, similar to the messages sheet
 
 ## Deployment Options
 

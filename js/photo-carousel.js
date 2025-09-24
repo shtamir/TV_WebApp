@@ -57,6 +57,10 @@ if (!window.photoSchedule) {
   }
 }
 
+if (!window.photoHolidaySchedule) {
+  window.photoHolidaySchedule = {};
+}
+
 // Function to get the current time slot
 function getTimeSlot() {
   const now = new Date();
@@ -69,17 +73,63 @@ function getTimeSlot() {
 }
 
 
+function getHolidayPhotos() {
+  const now = new Date();
+  const isoDate = now.toISOString().split('T')[0];
+  const timeSlot = getTimeSlot();
+  const holidaySchedule = window.photoHolidaySchedule || {};
+  const holidayForToday = holidaySchedule[isoDate];
+
+  if (!holidayForToday) {
+    if (window.activeHolidayName) {
+      window.activeHolidayName = '';
+    }
+    return null;
+  }
+
+  const holidayPhotos =
+    holidayForToday?.[timeSlot] ||
+    holidayForToday?.all ||
+    holidayForToday?.any ||
+    holidayForToday?.default ||
+    null;
+
+  const holidayName = holidayForToday?.__meta?.name;
+  if (holidayName) {
+    window.activeHolidayName = holidayName;
+  } else if (window.activeHolidayName) {
+    window.activeHolidayName = '';
+  }
+
+  if (holidayPhotos && holidayPhotos.length) {
+    console.log(
+      `getHolidayPhotos(): Using holiday photos for ${isoDate}, timeSlot: ${timeSlot}${holidayName ? `, holiday: ${holidayName}` : ''}`
+    );
+  }
+
+  return holidayPhotos;
+}
+
 // Function to get today's photo set
 function getTodayPhotos() {
   const now = new Date();
   const dayName = now.toLocaleString('en-US', { weekday: 'long' });
   const timeSlot = getTimeSlot();
   console.log(`getTodayPhotos(): timeSlot:${timeSlot}, dayName: ${dayName}`);
-  //return photoSchedule[dayName]?.[timeSlot] || ["images/default.jpg"];
+  const holidayPhotos = getHolidayPhotos();
+
+  if (holidayPhotos && holidayPhotos.length) {
+    return holidayPhotos;
+  }
+
   const activeSchedule = window.photoSchedule || defaultPhotoSchedule;
   return (
     activeSchedule?.[dayName]?.[timeSlot] ||
+    activeSchedule?.[dayName]?.all ||
+    activeSchedule?.[dayName]?.any ||
     defaultPhotoSchedule?.[dayName]?.[timeSlot] ||
+    defaultPhotoSchedule?.[dayName]?.all ||
+    defaultPhotoSchedule?.[dayName]?.any ||
     ["images/default.jpg"]
   );
 }
@@ -91,11 +141,16 @@ let photoInterval = null;
 
 // Initialize the photo carousel
 function initPhotoCarousel() {
-  photoElement = document.getElementById('photoElement');
+  const photoElement = document.getElementById('photoElement');
 
   if (!photoElement) {
     console.error('Photo element not found!');
     return;
+  }
+
+  if (photoInterval) {
+    clearInterval(photoInterval);
+    photoInterval = null;
   }
 
   const photos = getTodayPhotos();
@@ -105,6 +160,7 @@ function initPhotoCarousel() {
   }
 
   // Set initial photo
+  currentPhotoIndex = 0;
   photoElement.src = photos[0];
 
   // Start rotation if multiple photos exist
@@ -131,17 +187,30 @@ function rotatePhotos(photoList) {
 
 // Preload images for smooth transitions
 function preloadImages() {
-  //Object.values(photoSchedule).forEach(day => {
   const activeSchedule = window.photoSchedule || {};
   const scheduleToPreload = Object.keys(activeSchedule).length ? activeSchedule : defaultPhotoSchedule;
-  Object.values(scheduleToPreload).forEach(day => {
-    Object.values(day).forEach(timeSlot => {
-      timeSlot.forEach(src => {
+  const holidaySchedule = window.photoHolidaySchedule || {};
+
+  const preloadFromNode = node => {
+    if (!node) {
+      return;
+    }
+
+    if (Array.isArray(node)) {
+      node.forEach(src => {
         const img = new Image();
         img.src = src;
       });
-    });
-  });
+      return;
+    }
+
+    if (typeof node === 'object') {
+      Object.values(node).forEach(preloadFromNode);
+    }
+  };
+
+  preloadFromNode(scheduleToPreload);
+  preloadFromNode(holidaySchedule);
 }
 
 /*

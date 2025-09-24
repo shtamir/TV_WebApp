@@ -62,12 +62,113 @@ function cloneDefaultPhotoSchedule() {
   return {};
 }
 
+const TIME_SLOTS = ['morning', 'noon', 'evening', 'night'];
+
+function normalizeTimeSlot(rawValue) {
+  const normalized = (rawValue || '').trim().toLowerCase();
+
+  if (!normalized) {
+    return 'all';
+  }
+
+  if (TIME_SLOTS.includes(normalized)) {
+    return normalized;
+  }
+
+  if (['all', 'any', '*'].includes(normalized)) {
+    return 'all';
+  }
+
+  return null;
+}
+
+function normalizeDateString(rawValue, referenceYear) {
+  if (!rawValue) {
+    return null;
+  }
+
+  const trimmed = rawValue.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  const isoMatch = trimmed.match(/^\d{4}-\d{2}-\d{2}$/);
+  if (isoMatch) {
+    return trimmed;
+  }
+
+  const dayMonthMatch = trimmed.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{4}))?$/);
+  if (dayMonthMatch) {
+    const day = dayMonthMatch[1].padStart(2, '0');
+    const month = dayMonthMatch[2].padStart(2, '0');
+    const year = (dayMonthMatch[3] || referenceYear).padStart(4, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  const parsedDate = new Date(trimmed);
+  if (!Number.isNaN(parsedDate.getTime())) {
+    return parsedDate.toISOString().split('T')[0];
+  }
+
+  console.warn(`normalizeDateString(): Unable to parse date value "${rawValue}"`);
+  return null;
+}
+
+function parseDateList(rawValue) {
+  if (!rawValue) {
+    return [];
+  }
+
+  const currentYear = new Date().getFullYear().toString();
+  return rawValue
+    .split('|')
+    .map(value => normalizeDateString(value, currentYear))
+    .filter(Boolean);
+}
+
+function parsePhotoUrlList(rawValue) {
+  if (!rawValue) {
+    return [];
+  }
+
+  return rawValue
+    .split('|')
+    .map(url => url.trim())
+    .filter(url => url.length > 0);
+}
+
+function applyPhotoUrlsToTimeSlots(target, timeSlot, photoUrls) {
+  if (!target || !photoUrls || photoUrls.length === 0) {
+    return;
+  }
+
+  const slots = timeSlot === 'all' ? TIME_SLOTS : [timeSlot];
+
+  slots.forEach(slot => {
+    if (!slot) {
+      return;
+    }
+    target[slot] = photoUrls;
+  });
+
+  if (timeSlot === 'all') {
+    target.all = photoUrls;
+    target.any = photoUrls;
+    target.default = photoUrls;
+  }
+}
+
 // Fetch photo schedule from Google Sheets
 function fetchPhotoScheduleFromGoogleSheet() {
   if (!sheetsConfig || !sheetsConfig.photoSheetUrl) {
     console.warn('Photo sheet URL is not configured. Falling back to default schedule.');
     window.photoSchedule = cloneDefaultPhotoSchedule();
-    return Promise.resolve(window.photoSchedule);
+    window.photoHolidaySchedule = {};
+    return Promise.resolve({
+      defaultSchedule: window.photoSchedule,
+      holidaySchedule: window.photoHolidaySchedule
+    });
   }
 
   return fetch(sheetsConfig.photoSheetUrl)
@@ -86,62 +187,113 @@ function fetchPhotoScheduleFromGoogleSheet() {
       if (lines.length === 0) {
         console.warn('Photo schedule sheet is empty. Using default schedule.');
         window.photoSchedule = cloneDefaultPhotoSchedule();
-        return window.photoSchedule;
+        window.photoHolidaySchedule = {};
+        return {
+          defaultSchedule: window.photoSchedule,
+          holidaySchedule: window.photoHolidaySchedule
+        };
       }
 
       const rows = lines.map(line => line.split(',').map(cell => cell.trim()));
       const headerRow = rows[0].map(cell => cell.toLowerCase());
-      const hasHeader = headerRow.includes('day_of_week') || headerRow.includes('time_slot') || headerRow.includes('photo_urls');
+      const hasHeader = headerRow.some(cell => ['day_of_week', 'time_slot', 'photo_urls', 'type', 'date', 'holiday_name', 'name', 'title'].includes(cell));
 
       let dayIndex = 0;
       let timeIndex = 1;
       let urlsIndex = 2;
+      let typeIndex = -1;
+      let dateIndex = -1;
+      let nameIndex = -1;
       let dataRows = rows;
 
       if (hasHeader) {
         dayIndex = headerRow.indexOf('day_of_week');
         timeIndex = headerRow.indexOf('time_slot');
         urlsIndex = headerRow.indexOf('photo_urls');
+        typeIndex = headerRow.indexOf('type');
+        dateIndex = headerRow.indexOf('date');
+        nameIndex = headerRow.indexOf('holiday_name');
+        if (nameIndex === -1) {
+          nameIndex = headerRow.indexOf('name');
+        }
+        if (nameIndex === -1) {
+          nameIndex = headerRow.indexOf('title');
+        }
 
-        if (dayIndex === -1 || timeIndex === -1 || urlsIndex === -1) {
+        if (urlsIndex === -1) {
           console.warn('Photo schedule sheet headers are incomplete. Using default schedule.');
           window.photoSchedule = cloneDefaultPhotoSchedule();
-          return window.photoSchedule;
+          window.photoHolidaySchedule = {};
+          return {
+            defaultSchedule: window.photoSchedule,
+            holidaySchedule: window.photoHolidaySchedule
+          };
         }
 
         dataRows = rows.slice(1);
       }
 
       const updatedSchedule = cloneDefaultPhotoSchedule();
-      const validTimeSlots = new Set(['morning', 'noon', 'evening']);
+      const holidaySchedule = {};
       const dayNameMap = {
-        'sunday': 'Sunday',
-        'monday': 'Monday',
-        'tuesday': 'Tuesday',
-        'wednesday': 'Wednesday',
-        'thursday': 'Thursday',
-        'friday': 'Friday',
-        'saturday': 'Saturday'
+        sunday: 'Sunday',
+        monday: 'Monday',
+        tuesday: 'Tuesday',
+        wednesday: 'Wednesday',
+        thursday: 'Thursday',
+        friday: 'Friday',
+        saturday: 'Saturday'
       };
 
       dataRows.forEach(row => {
-        const dayRaw = row[dayIndex] || '';
-        const timeRaw = row[timeIndex] || '';
         const urlsRaw = row[urlsIndex] || '';
+        const photoUrls = parsePhotoUrlList(urlsRaw);
 
-        const normalizedDay = dayNameMap[dayRaw.trim().toLowerCase()];
-        const normalizedTimeSlot = timeRaw.trim().toLowerCase();
-
-        if (!normalizedDay || !normalizedTimeSlot || urlsRaw.length === 0) {
+        if (photoUrls.length === 0) {
           return;
         }
 
-        const photoUrls = urlsRaw
-          .split('|')
-          .map(url => url.trim())
-          .filter(url => url.length > 0);
+        const normalizedTimeSlot = normalizeTimeSlot(row[timeIndex]);
 
-        if (photoUrls.length === 0 || !validTimeSlots.has(normalizedTimeSlot)) {
+        if (!normalizedTimeSlot) {
+          console.warn('Skipping row due to missing or invalid time slot:', row);
+          return;
+        }
+
+        const recordType = typeIndex !== -1 ? (row[typeIndex] || '').trim().toLowerCase() : '';
+        const dayRaw = dayIndex !== -1 ? row[dayIndex] : '';
+        const dateRaw = dateIndex !== -1 ? row[dateIndex] : '';
+
+        const isHolidayRecord = recordType === 'holiday' || (!!dateRaw && !dayRaw);
+
+        if (isHolidayRecord) {
+          const dates = parseDateList(dateRaw);
+
+          if (dates.length === 0) {
+            console.warn('Skipping holiday row due to missing date:', row);
+            return;
+          }
+
+          const holidayName = nameIndex !== -1 ? (row[nameIndex] || '').trim() : '';
+
+          dates.forEach(dateValue => {
+            if (!holidaySchedule[dateValue]) {
+              holidaySchedule[dateValue] = {};
+            }
+            applyPhotoUrlsToTimeSlots(holidaySchedule[dateValue], normalizedTimeSlot, photoUrls);
+            if (holidayName) {
+              holidaySchedule[dateValue].__meta = holidaySchedule[dateValue].__meta || {};
+              holidaySchedule[dateValue].__meta.name = holidayName;
+            }
+          });
+
+          return;
+        }
+
+        const normalizedDay = dayNameMap[(dayRaw || '').trim().toLowerCase()];
+
+        if (!normalizedDay) {
+          console.warn('Skipping row due to missing or invalid day of week:', row);
           return;
         }
 
@@ -149,15 +301,21 @@ function fetchPhotoScheduleFromGoogleSheet() {
           updatedSchedule[normalizedDay] = {};
         }
 
-        updatedSchedule[normalizedDay][normalizedTimeSlot] = photoUrls;
+        applyPhotoUrlsToTimeSlots(updatedSchedule[normalizedDay], normalizedTimeSlot, photoUrls);
       });
 
       window.photoSchedule = updatedSchedule;
-      return window.photoSchedule;
+      window.photoHolidaySchedule = holidaySchedule;
+
+      return {
+        defaultSchedule: window.photoSchedule,
+        holidaySchedule: window.photoHolidaySchedule
+      };
     })
     .catch(error => {
       console.error('Error fetching photo schedule:', error);
       window.photoSchedule = cloneDefaultPhotoSchedule();
+      window.photoHolidaySchedule = {};
       throw error;
     });
 }
