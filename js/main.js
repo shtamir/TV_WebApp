@@ -2,16 +2,113 @@
 
 let adminWasPresent = false; // Initialize adminWasPresent flag
 
+const searchParams = new URLSearchParams(window.location.search || '');
+const testModeEnabled =
+  searchParams.has('testMode') ||
+  searchParams.get('testing') === 'true' ||
+  searchParams.get('testTime') === '1';
+
+const testingControls = {
+  enabled: testModeEnabled,
+  overrideDayName: null,
+  overrideTimeSlot: null,
+  overrideDate: null,
+  infoElement: null,
+  changeCallbacks: [],
+};
+
+window.testingControls = testingControls;
+
+function registerTestingChangeCallback(callback) {
+  if (typeof callback === 'function') {
+    testingControls.changeCallbacks.push(callback);
+  }
+}
+
+function notifyTestingChange() {
+  testingControls.changeCallbacks.forEach(callback => {
+    try {
+      callback(testingControls);
+    } catch (error) {
+      console.error('Testing change callback failed:', error);
+    }
+  });
+}
+
+function getCurrentDate() {
+  const baseDate = new Date();
+
+  if (!testingControls.enabled) {
+    return baseDate;
+  }
+
+  const simulatedDate = new Date(baseDate.getTime());
+
+  if (testingControls.overrideDate) {
+    const parts = testingControls.overrideDate.split('-').map(Number);
+    if (parts.length === 3 && parts.every(part => Number.isFinite(part))) {
+      const [year, month, day] = parts;
+      simulatedDate.setFullYear(year, month - 1, day);
+    }
+  } else if (testingControls.overrideDayName) {
+    const dayNameToIndex = {
+      Sunday: 0,
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
+    };
+    const desiredIndex = dayNameToIndex[testingControls.overrideDayName];
+    if (typeof desiredIndex === 'number') {
+      const diff = desiredIndex - simulatedDate.getDay();
+      simulatedDate.setDate(simulatedDate.getDate() + diff);
+    }
+  }
+
+  if (testingControls.overrideTimeSlot) {
+    const timeSlotHour = {
+      morning: 9,
+      noon: 13,
+      evening: 18,
+      night: 22,
+    }[testingControls.overrideTimeSlot];
+
+    if (typeof timeSlotHour === 'number') {
+      simulatedDate.setHours(timeSlotHour, 0, 0, 0);
+    }
+  }
+
+  return simulatedDate;
+}
+
+window.getCurrentDate = getCurrentDate;
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+  if (testingControls.enabled) {
+    setupTestingControls();
+  }
+
   // Start the clock
   initClock();
-  
+
   // Load all data sources
   loadAllData();
-  
+
   // Set up periodic refresh for dynamic data
   setupRefreshTimers();
+});
+
+registerTestingChangeCallback(() => {
+  updateTimeAndDate();
+  if (typeof preloadImages === 'function') {
+    preloadImages();
+  }
+  if (typeof initPhotoCarousel === 'function') {
+    initPhotoCarousel();
+  }
 });
 
 // Initialize the clock/calendar
@@ -25,7 +122,7 @@ function updateTimeAndDate() {
   const dateElement = document.getElementById('date');
   const timeElement = document.getElementById('time');
 
-  const now = new Date();
+  const now = getCurrentDate();
   /*
   // Format date as DD.MM.YYYY
   let day = String(now.getDate()).padStart(2, '0');
@@ -47,7 +144,23 @@ function updateTimeAndDate() {
   const timeString = now.toLocaleTimeString('he-IL');
   dateElement.innerHTML = dateString;
   timeElement.innerHTML = timeString;
-  
+
+  if (testingControls.enabled && testingControls.infoElement) {
+    const activeOverrides = [];
+    if (testingControls.overrideDate) {
+      activeOverrides.push(`Date: ${testingControls.overrideDate}`);
+    }
+    if (testingControls.overrideDayName) {
+      activeOverrides.push(`Day: ${testingControls.overrideDayName}`);
+    }
+    if (testingControls.overrideTimeSlot) {
+      activeOverrides.push(`Slot: ${testingControls.overrideTimeSlot}`);
+    }
+    testingControls.infoElement.textContent = activeOverrides.length
+      ? `Testing overrides → ${activeOverrides.join(' | ')}`
+      : 'Testing overrides are disabled';
+  }
+
   //document.getElementById('timeDateBox').innerHTML = formattedDateTime;
 }
 
@@ -96,9 +209,140 @@ function showError(elementId, message) {
   const element = document.getElementById(elementId);
   element.innerHTML = message || 'An error occurred';
   element.classList.add('error-state');
-  
+
   // Log to console for debugging
   console.error(`Error in ${elementId}: ${message}`);
+}
+
+function setupTestingControls() {
+  const panel = document.createElement('div');
+  panel.id = 'testingControlsPanel';
+  panel.style.position = 'fixed';
+  panel.style.top = '10px';
+  panel.style.right = '10px';
+  panel.style.background = 'rgba(0, 0, 0, 0.75)';
+  panel.style.border = '1px solid #ffffff55';
+  panel.style.padding = '12px';
+  panel.style.zIndex = '9999';
+  panel.style.fontFamily = 'Arial, sans-serif';
+  panel.style.fontSize = '14px';
+  panel.style.color = '#fff';
+  panel.style.borderRadius = '8px';
+  panel.style.maxWidth = '260px';
+
+  const title = document.createElement('div');
+  title.textContent = 'Testing Controls';
+  title.style.fontWeight = 'bold';
+  title.style.marginBottom = '8px';
+  panel.appendChild(title);
+
+  const infoLine = document.createElement('div');
+  infoLine.style.fontSize = '12px';
+  infoLine.style.marginBottom = '8px';
+  infoLine.textContent = 'Testing overrides are disabled';
+  panel.appendChild(infoLine);
+  testingControls.infoElement = infoLine;
+
+  const createField = (labelText, inputElement) => {
+    const wrapper = document.createElement('label');
+    wrapper.style.display = 'block';
+    wrapper.style.marginBottom = '6px';
+
+    const label = document.createElement('span');
+    label.textContent = labelText;
+    label.style.display = 'block';
+    label.style.marginBottom = '2px';
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(inputElement);
+    panel.appendChild(wrapper);
+  };
+
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.style.width = '100%';
+  dateInput.addEventListener('change', event => {
+    testingControls.overrideDate = event.target.value || null;
+
+    if (testingControls.overrideDate) {
+      const selectedDate = new Date(`${testingControls.overrideDate}T00:00:00`);
+      if (!Number.isNaN(selectedDate.getTime())) {
+        const dayName = selectedDate.toLocaleString('en-US', { weekday: 'long' });
+        testingControls.overrideDayName = dayName;
+        daySelect.value = dayName;
+      }
+    }
+
+    notifyTestingChange();
+  });
+
+  createField('Override date', dateInput);
+
+  const daySelect = document.createElement('select');
+  daySelect.style.width = '100%';
+  ['', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    .forEach(dayName => {
+      const option = document.createElement('option');
+      option.value = dayName || '';
+      option.textContent = dayName || 'Current day';
+      daySelect.appendChild(option);
+    });
+
+  daySelect.addEventListener('change', event => {
+    testingControls.overrideDayName = event.target.value || null;
+    if (!event.target.value) {
+      if (testingControls.overrideDate) {
+        testingControls.overrideDate = null;
+        dateInput.value = '';
+      }
+    }
+    notifyTestingChange();
+  });
+
+  createField('Override day of week', daySelect);
+
+  const timeSlotSelect = document.createElement('select');
+  timeSlotSelect.style.width = '100%';
+  ['', 'morning', 'noon', 'evening', 'night'].forEach(slot => {
+    const option = document.createElement('option');
+    option.value = slot;
+    option.textContent = slot ? slot.charAt(0).toUpperCase() + slot.slice(1) : 'Current slot';
+    timeSlotSelect.appendChild(option);
+  });
+
+  timeSlotSelect.addEventListener('change', event => {
+    testingControls.overrideTimeSlot = event.target.value || null;
+    notifyTestingChange();
+  });
+
+  createField('Override time slot', timeSlotSelect);
+
+  const resetButton = document.createElement('button');
+  resetButton.type = 'button';
+  resetButton.textContent = 'Reset overrides';
+  resetButton.style.marginTop = '6px';
+  resetButton.style.width = '100%';
+  resetButton.style.padding = '6px';
+  resetButton.style.border = 'none';
+  resetButton.style.borderRadius = '4px';
+  resetButton.style.cursor = 'pointer';
+  resetButton.style.background = '#2c7be5';
+  resetButton.style.color = '#fff';
+
+  resetButton.addEventListener('click', () => {
+    testingControls.overrideDate = null;
+    testingControls.overrideDayName = null;
+    testingControls.overrideTimeSlot = null;
+    dateInput.value = '';
+    daySelect.value = '';
+    timeSlotSelect.value = '';
+    notifyTestingChange();
+  });
+
+  panel.appendChild(resetButton);
+
+  document.body.appendChild(panel);
+  notifyTestingChange();
 }
 
 // Refresh the page every 60 minutes (adjust as needed)

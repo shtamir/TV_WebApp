@@ -63,7 +63,13 @@ if (!window.photoHolidaySchedule) {
 
 // Function to get the current time slot
 function getTimeSlot() {
-  const now = new Date();
+  const testing = window.testingControls;
+  if (testing?.enabled && testing.overrideTimeSlot) {
+    console.log(`getTimeSlot(): Using testing override ${testing.overrideTimeSlot}`);
+    return testing.overrideTimeSlot;
+  }
+
+  const now = typeof window.getCurrentDate === 'function' ? window.getCurrentDate() : new Date();
   const hour = now.getHours();
   console.log(`getTimeSlot(): hour:${hour}, now: ${now}`);
   if (hour >= 20 || hour < 5) return "night";    // 20:00 - 04:59
@@ -74,8 +80,11 @@ function getTimeSlot() {
 
 
 function getHolidayPhotos() {
-  const now = new Date();
-  const isoDate = now.toISOString().split('T')[0];
+  const now = typeof window.getCurrentDate === 'function' ? window.getCurrentDate() : new Date();
+  const testing = window.testingControls;
+  const isoDate = testing?.enabled && testing.overrideDate
+    ? testing.overrideDate
+    : now.toISOString().split('T')[0];
   const timeSlot = getTimeSlot();
   const holidaySchedule = window.photoHolidaySchedule || {};
   const holidayForToday = holidaySchedule[isoDate];
@@ -112,8 +121,18 @@ function getHolidayPhotos() {
 
 // Function to get today's photo set
 function getTodayPhotos() {
-  const now = new Date();
-  const dayName = now.toLocaleString('en-US', { weekday: 'long' });
+  const testing = window.testingControls;
+  let dayName = null;
+
+  if (testing?.enabled && testing.overrideDayName) {
+    dayName = testing.overrideDayName;
+  }
+
+  if (!dayName) {
+    const now = typeof window.getCurrentDate === 'function' ? window.getCurrentDate() : new Date();
+    dayName = now.toLocaleString('en-US', { weekday: 'long' });
+  }
+
   const timeSlot = getTimeSlot();
   console.log(`getTodayPhotos(): timeSlot:${timeSlot}, dayName: ${dayName}`);
   const holidayPhotos = getHolidayPhotos();
