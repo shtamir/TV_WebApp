@@ -1,23 +1,7 @@
 // photo-carousel.js - Photo carousel functionality for Yakinton 46 application
 
-// Configuration for photo carousel
-/*const photoConfig = {
-  photos: [
-    "images/carousel/pic3.jpg"
-    "images/carousel/pic1.jpeg",
-    "images/carousel/pic2.jpeg",
-    "images/carousel/pic2.jpg",
-    "images/carousel/pic3.gif",
-    "images/carousel/pic3.jpeg",
-    "images/carousel/pic4.gif",
-    "images/carousel/pic4.jpeg",
-    "images/carousel/pic5.jpeg"
-  ],
-  interval: 10000 // Change photo every 10 seconds
-}; */
-
 // Configuration for day-wise and time-wise photo display
-const photoSchedule_regular = {
+const defaultPhotoSchedule = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -55,236 +39,16 @@ const photoSchedule_regular = {
   },
 };
 
-// rosh_haShana
-const photoSchedule = {
-  "Sunday": {
-    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg"]
-  },
-  "Monday": {
-    "morning": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/morning_04.gif", "images/carousel/holydays/rosh_haShana/pic2.jpg" , "images/carousel/morning_01.jpg"],
-    "noon": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"],
-    "evening": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"]
-  },
-  "Tuesday": {
-    "morning": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"],
-    "noon": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"],
-    "evening": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"]
-  },
-  "Wednesday": {
-    "morning": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"],
-    "noon": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"],
-    "evening": ["images/carousel/holydays/rosh_haShana/pic1.jpg", "images/carousel/holydays/rosh_haShana/pic2.jpg", "images/carousel/holydays/rosh_haShana/pic3.jpg", "images/carousel/holydays/rosh_haShana/pic4.jpg", "images/carousel/holydays/rosh_haShana/pic5.jpg"]
-  },
-  "Thursday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Friday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-  "Saturday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-};
+window.defaultPhotoSchedule = defaultPhotoSchedule;
 
-const photoSchedule_pesah = {
-  "Sunday": {
-    "morning": ["images/carousel/holydays/pesah/pesah_01.jpg", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg"]
-  },
-  "Monday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Tuesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Wednesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Thursday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Friday": {
-    "morning": ["images/carousel/holydays/pesah/pesah_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/holydays/pesah/pesah_02.jpg","images/carousel/goodday_01.jpg"],
-    "evening": ["images/carousel/holydays/pesah/pesah_03.jpg","images/carousel/goodevening_01.jpg", "images/carousel/weekend_01.jpg", "images/carousel/holydays/pesah/pesah_04.jpg"]
-  },
-  "Saturday": {
-    "morning": ["images/carousel/holydays/pesah/pesah_01.jpg", "images/carousel/morning_04.gif", "images/carousel/holydays/pesah/pesah_02.jpg", "images/carousel/weekend_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/pesah/pesah_02.jpg", "images/carousel/weekend_01.jpg","images/carousel/holydays/pesah/pesah_02.jpg"],
-    "evening": ["images/carousel/holydays/pesah/pesah_03.jpg", "images/carousel/goodevening_01.jpg", "images/carousel/holydays/pesah/pesah_04.jpg", "images/carousel/weekend_01.jpg"]
-  },
-};
-
-photoSchedule_holocaust = {
-  "Sunday": {
-    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg"]
-  },
-  "Monday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Tuesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Wednesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Thursday": {
-    "morning": ["images/carousel/holydays/holocaust/Holocaust_02.jpg"],
-    "noon": ["images/carousel/holydays/holocaust/Holocaust_02.jpg"],
-    "evening": ["images/carousel/holydays/holocaust/Holocaust_01.jpeg"]
-  },
-  "Friday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-  "Saturday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-};
-
-
-const photoSchedule_memorial_day = {
-  "Sunday": {
-    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg"]
-  },
-  "Monday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Tuesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
-  },
-  "Wednesday": {
-    "morning": ["images/carousel/holydays/memorial_day/1.jpg"],
-    "noon": ["images/carousel/holydays/memorial_day/1.jpg"],
-    "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
-  },
-  "Thursday": {
-    "morning": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
-    "noon": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
-    "evening": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"]
-  },
-  "Friday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-  "Saturday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-};
-
-// shavuot
-const photoSchedule_shavuot = {
-  "Sunday": {
-    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
-    "noon": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"],
-    "evening": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"]
-  },
-  "Monday": {
-    "morning": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/morning_04.gif", "images/carousel/holydays/shavuot/image_02.jpg" , "images/carousel/morning_01.jpg"],
-    "noon": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"],
-    "evening": ["images/carousel/holydays/shavuot/image_01.jpg", "images/carousel/holydays/shavuot/image_02.jpg"]
-  },
-  "Tuesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Wednesday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Thursday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
-  },
-  "Friday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-  "Saturday": {
-    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
-    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
-    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
-  },
-};
-/*
-const photoSchedule = {
-  "Sunday": {
-    "morning": ["images/sun_morning1.jpeg", "images/sun_morning2.jpeg"],
-    "noon": ["images/sun_noon1.jpeg", "images/sun_noon2.jpeg"],
-    "evening": ["images/sun_evening1.jpeg", "images/sun_evening2.jpeg"]
-  },
-  "Monday": {
-    "morning": ["images/mon_morning1.jpeg", "images/mon_morning2.jpeg"],
-    "noon": ["images/mon_noon1.jpeg", "images/mon_noon2.jpeg"],
-    "evening": ["images/mon_evening1.jpeg", "images/mon_evening2.jpeg"]
-  },
-  "Tuesday": {
-    "morning": ["images/tue_morning1.jpeg", "images/tue_morning2.jpeg"],
-    "noon": ["images/tue_noon1.jpeg", "images/tue_noon2.jpeg"],
-    "evening": ["images/tue_evening1.jpeg", "images/tue_evening2.jpeg"]
-  },
-  "Wednesday": {
-    "morning": ["images/wen_morning1.jpeg", "images/wen_morning2.jpeg"],
-    "noon": ["images/wen_noon1.jpeg", "images/wen_noon2.jpeg"],
-    "evening": ["images/wen_evening1.jpeg", "images/wen_evening2.jpeg"]
-  },
-  "Thursday": {
-    "morning": ["images/thu_morning1.jpeg", "images/thu_morning2.jpeg"],
-    "noon": ["images/thu_noon1.jpeg", "images/thu_noon2.jpeg"],
-    "evening": ["images/thu_evening1.jpeg", "images/thu_evening2.jpeg"]
-  },
-  "Friday": {
-    "morning": ["images/fri_morning1.jpeg", "images/fri_morning2.jpeg"],
-    "noon": ["images/fri_noon1.jpeg", "images/fri_noon2.jpeg"],
-    "evening": ["images/fri_evening1.jpeg", "images/fri_evening2.jpeg"]
-  },
-  "Saturday": {
-    "morning": ["images/sat_morning1.jpeg", "images/sat_morning2.jpeg"],
-    "noon": ["images/sat_noon1.jpeg", "images/sat_noon2.jpeg"],
-    "evening": ["images/sat_evening1.jpeg", "images/sat_evening2.jpeg"]
-  },
-};*/
+if (!window.photoSchedule) {
+  try {
+    window.photoSchedule = JSON.parse(JSON.stringify(defaultPhotoSchedule));
+  } catch (error) {
+    console.warn('Unable to clone default photo schedule, using reference instead.', error);
+    window.photoSchedule = defaultPhotoSchedule;
+  }
+}
 
 // Function to get the current time slot
 function getTimeSlot() {
@@ -303,7 +67,13 @@ function getTodayPhotos() {
   const dayName = now.toLocaleString('en-US', { weekday: 'long' });
   const timeSlot = getTimeSlot();
   console.log(`getTodayPhotos(): timeSlot:${timeSlot}, dayName: ${dayName}`);
-  return photoSchedule[dayName]?.[timeSlot] || ["images/default.jpg"];
+  //return photoSchedule[dayName]?.[timeSlot] || ["images/default.jpg"];
+  const activeSchedule = window.photoSchedule || defaultPhotoSchedule;
+  return (
+    activeSchedule?.[dayName]?.[timeSlot] ||
+    defaultPhotoSchedule?.[dayName]?.[timeSlot] ||
+    ["images/default.jpg"]
+  );
 }
 
 
@@ -353,7 +123,10 @@ function rotatePhotos(photoList) {
 
 // Preload images for smooth transitions
 function preloadImages() {
-  Object.values(photoSchedule).forEach(day => {
+  //Object.values(photoSchedule).forEach(day => {
+  const activeSchedule = window.photoSchedule || {};
+  const scheduleToPreload = Object.keys(activeSchedule).length ? activeSchedule : defaultPhotoSchedule;
+  Object.values(scheduleToPreload).forEach(day => {
     Object.values(day).forEach(timeSlot => {
       timeSlot.forEach(src => {
         const img = new Image();
@@ -363,11 +136,11 @@ function preloadImages() {
   });
 }
 
-
+/*
 // Initialize when the document is ready
 document.addEventListener('DOMContentLoaded', function() {
   preloadImages();
   initPhotoCarousel();
 });
-
+*/
 // End of photo-carousel.js

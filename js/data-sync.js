@@ -2,8 +2,10 @@
 
 // Configuration for Google Sheets
 const sheetsConfig = {
-  messagesSheetUrl: ' https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=0&single=true&output=csv',  
+  //messagesSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=0&single=true&output=csv',  
+  messagesSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=0&single=true&output=csv',
   todoSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=1147753220&single=true&output=csv',
+  photoSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=1165060238&single=true&output=csv',
   maxMessages: 10,
   maxTodoItems: 16
 };
@@ -45,6 +47,118 @@ function fetchMessagesFromGoogleSheet() {
     .catch(error => {
       console.error('Error fetching sheet data:', error);
       showError('messagesBox', 'Unable to load messages');
+    });
+}
+
+function cloneDefaultPhotoSchedule() {
+  if (typeof window !== 'undefined' && window.defaultPhotoSchedule) {
+    try {
+      return JSON.parse(JSON.stringify(window.defaultPhotoSchedule));
+    } catch (error) {
+      console.warn('Unable to clone default photo schedule, using shallow copy instead.', error);
+      return Object.assign({}, window.defaultPhotoSchedule);
+    }
+  }
+  return {};
+}
+
+// Fetch photo schedule from Google Sheets
+function fetchPhotoScheduleFromGoogleSheet() {
+  if (!sheetsConfig || !sheetsConfig.photoSheetUrl) {
+    console.warn('Photo sheet URL is not configured. Falling back to default schedule.');
+    window.photoSchedule = cloneDefaultPhotoSchedule();
+    return Promise.resolve(window.photoSchedule);
+  }
+
+  return fetch(sheetsConfig.photoSheetUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Google Sheets responded with status ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(data => {
+      const lines = data
+        .split('\n')
+        .map(line => line.replace(/\r/g, '').trim())
+        .filter(line => line.length > 0);
+
+      if (lines.length === 0) {
+        console.warn('Photo schedule sheet is empty. Using default schedule.');
+        window.photoSchedule = cloneDefaultPhotoSchedule();
+        return window.photoSchedule;
+      }
+
+      const rows = lines.map(line => line.split(',').map(cell => cell.trim()));
+      const headerRow = rows[0].map(cell => cell.toLowerCase());
+      const hasHeader = headerRow.includes('day_of_week') || headerRow.includes('time_slot') || headerRow.includes('photo_urls');
+
+      let dayIndex = 0;
+      let timeIndex = 1;
+      let urlsIndex = 2;
+      let dataRows = rows;
+
+      if (hasHeader) {
+        dayIndex = headerRow.indexOf('day_of_week');
+        timeIndex = headerRow.indexOf('time_slot');
+        urlsIndex = headerRow.indexOf('photo_urls');
+
+        if (dayIndex === -1 || timeIndex === -1 || urlsIndex === -1) {
+          console.warn('Photo schedule sheet headers are incomplete. Using default schedule.');
+          window.photoSchedule = cloneDefaultPhotoSchedule();
+          return window.photoSchedule;
+        }
+
+        dataRows = rows.slice(1);
+      }
+
+      const updatedSchedule = cloneDefaultPhotoSchedule();
+      const validTimeSlots = new Set(['morning', 'noon', 'evening']);
+      const dayNameMap = {
+        'sunday': 'Sunday',
+        'monday': 'Monday',
+        'tuesday': 'Tuesday',
+        'wednesday': 'Wednesday',
+        'thursday': 'Thursday',
+        'friday': 'Friday',
+        'saturday': 'Saturday'
+      };
+
+      dataRows.forEach(row => {
+        const dayRaw = row[dayIndex] || '';
+        const timeRaw = row[timeIndex] || '';
+        const urlsRaw = row[urlsIndex] || '';
+
+        const normalizedDay = dayNameMap[dayRaw.trim().toLowerCase()];
+        const normalizedTimeSlot = timeRaw.trim().toLowerCase();
+
+        if (!normalizedDay || !normalizedTimeSlot || urlsRaw.length === 0) {
+          return;
+        }
+
+        const photoUrls = urlsRaw
+          .split('|')
+          .map(url => url.trim())
+          .filter(url => url.length > 0);
+
+        if (photoUrls.length === 0 || !validTimeSlots.has(normalizedTimeSlot)) {
+          return;
+        }
+
+        if (!updatedSchedule[normalizedDay]) {
+          updatedSchedule[normalizedDay] = {};
+        }
+
+        updatedSchedule[normalizedDay][normalizedTimeSlot] = photoUrls;
+      });
+
+      window.photoSchedule = updatedSchedule;
+      return window.photoSchedule;
+    })
+    .catch(error => {
+      console.error('Error fetching photo schedule:', error);
+      window.photoSchedule = cloneDefaultPhotoSchedule();
+      throw error;
     });
 }
 

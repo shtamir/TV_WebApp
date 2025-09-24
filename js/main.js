@@ -58,7 +58,15 @@ function loadAllData() {
   fetchNewsBreaks();
   fetchMessagesFromGoogleSheet();
   fetchTodoListFromGoogleSheet();
-  initPhotoCarousel();
+  //initPhotoCarousel();
+  fetchPhotoScheduleFromGoogleSheet()
+    .catch(error => {
+      console.error('Failed to fetch photo schedule from Google Sheets. Using fallback schedule.', error);
+    })
+    .finally(() => {
+      preloadImages();
+      initPhotoCarousel();
+    });
 }
 
 // Set up timers for periodic refresh of data
