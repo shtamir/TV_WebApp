@@ -17,7 +17,7 @@
 }; */
 
 // Configuration for day-wise and time-wise photo display
-const photoSchedule = {
+const photoSchedule_regular = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -42,6 +42,45 @@ const photoSchedule = {
     "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
     "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Friday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+  "Saturday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/weekend_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg", "images/carousel/weekend_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg", "images/carousel/weekend_01.jpg"]
+  },
+};
+
+// Configuration for Yom-Kipur
+const photoSchedule = {
+  "Sunday": {
+    "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg"]
+  },
+  "Monday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Tuesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
+  },
+  "Wednesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_01.jpg", "images/carousel/morning_02.jpg"],
+    "noon": ["images/carousel/holydays/yum_kipur/pic0.jpg", "images/carousel/holydays/yum_kipur/pic1.jpg"],
+    "evening": ["images/carousel/holydays/yum_kipur/pic4.jpg", "images/carousel/holydays/yum_kipur/pic5.jpg"]
+  },
+  "Thursday": {
+    "morning": ["images/carousel/holydays/yum_kipur/pic2.jpg", "images/carousel/holydays/yum_kipur/pic3.jpg", "images/carousel/holydays/yum_kipur/pic4.jpg", "images/carousel/holydays/yum_kipur/pic5.jpg"],
+    "noon": ["images/carousel/holydays/yum_kipur/pic2.jpg", "images/carousel/holydays/yum_kipur/pic3.jpg", "images/carousel/holydays/yum_kipur/pic4.jpg", "images/carousel/holydays/yum_kipur/pic5.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/yum_kipur/pic2.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/yum_kipur/pic4.jpg"]
   },
   "Friday": {
     "morning": ["images/carousel/morning_04.gif", "images/carousel/morning_02.jpg"],
