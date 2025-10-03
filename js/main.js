@@ -14,10 +14,50 @@ const testingControls = {
   overrideTimeSlot: null,
   overrideDate: null,
   infoElement: null,
+  imageInfoElement: null,
+  currentPhotoSrc: null,
   changeCallbacks: [],
 };
 
 window.testingControls = testingControls;
+
+function updateTestingInfoDisplay() {
+  if (!testingControls.enabled) {
+    return;
+  }
+
+  if (testingControls.infoElement) {
+    const activeOverrides = [];
+    if (testingControls.overrideDate) {
+      activeOverrides.push(`Date: ${testingControls.overrideDate}`);
+    }
+    if (testingControls.overrideDayName) {
+      activeOverrides.push(`Day: ${testingControls.overrideDayName}`);
+    }
+    if (testingControls.overrideTimeSlot) {
+      activeOverrides.push(`Slot: ${testingControls.overrideTimeSlot}`);
+    }
+    testingControls.infoElement.textContent = activeOverrides.length
+      ? `Testing overrides → ${activeOverrides.join(' | ')}`
+      : 'Testing overrides are disabled';
+  }
+
+  if (testingControls.imageInfoElement) {
+    testingControls.imageInfoElement.textContent = testingControls.currentPhotoSrc
+      ? `Current image source → ${testingControls.currentPhotoSrc}`
+      : 'Current image source → (not set)';
+  }
+}
+
+function setTestingCurrentPhotoSource(src) {
+  if (!testingControls.enabled) {
+    return;
+  }
+  testingControls.currentPhotoSrc = src || null;
+  updateTestingInfoDisplay();
+}
+
+window.setTestingCurrentPhotoSource = setTestingCurrentPhotoSource;
 
 function registerTestingChangeCallback(callback) {
   if (typeof callback === 'function') {
@@ -33,6 +73,7 @@ function notifyTestingChange() {
       console.error('Testing change callback failed:', error);
     }
   });
+  updateTestingInfoDisplay();
 }
 
 function getCurrentDate() {
@@ -145,21 +186,7 @@ function updateTimeAndDate() {
   dateElement.innerHTML = dateString;
   timeElement.innerHTML = timeString;
 
-  if (testingControls.enabled && testingControls.infoElement) {
-    const activeOverrides = [];
-    if (testingControls.overrideDate) {
-      activeOverrides.push(`Date: ${testingControls.overrideDate}`);
-    }
-    if (testingControls.overrideDayName) {
-      activeOverrides.push(`Day: ${testingControls.overrideDayName}`);
-    }
-    if (testingControls.overrideTimeSlot) {
-      activeOverrides.push(`Slot: ${testingControls.overrideTimeSlot}`);
-    }
-    testingControls.infoElement.textContent = activeOverrides.length
-      ? `Testing overrides → ${activeOverrides.join(' | ')}`
-      : 'Testing overrides are disabled';
-  }
+  updateTestingInfoDisplay();
 
   //document.getElementById('timeDateBox').innerHTML = formattedDateTime;
 }
@@ -242,6 +269,13 @@ function setupTestingControls() {
   infoLine.textContent = 'Testing overrides are disabled';
   panel.appendChild(infoLine);
   testingControls.infoElement = infoLine;
+
+  const imageInfoLine = document.createElement('div');
+  imageInfoLine.style.fontSize = '12px';
+  imageInfoLine.style.marginBottom = '8px';
+  imageInfoLine.textContent = 'Current image source → (not set)';
+  panel.appendChild(imageInfoLine);
+  testingControls.imageInfoElement = imageInfoLine;
 
   const createField = (labelText, inputElement) => {
     const wrapper = document.createElement('label');

@@ -181,6 +181,9 @@ function initPhotoCarousel() {
   // Set initial photo
   currentPhotoIndex = 0;
   photoElement.src = photos[0];
+  if (typeof window.setTestingCurrentPhotoSource === 'function') {
+    window.setTestingCurrentPhotoSource(photos[0]);
+  }
 
   // Start rotation if multiple photos exist
   if (photos.length > 1) {
@@ -201,6 +204,9 @@ function rotatePhotos(photoList) {
   setTimeout(() => {
     photoElement.src = photoList[currentPhotoIndex];
     photoElement.style.opacity = 1;
+    if (typeof window.setTestingCurrentPhotoSource === 'function') {
+      window.setTestingCurrentPhotoSource(photoList[currentPhotoIndex]);
+    }
   }, 1000); // Wait 1 second for fade-out
 }
 
