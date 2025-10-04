@@ -74,8 +74,9 @@ yakinton46/
 ### Photo Schedule Sheet
 - Each row describes either a default schedule entry or a holiday override
 - Required columns: `day_of_week`, `time_slot`, `photo_urls`
-- Optional columns: `type` (use `holiday` for overrides), `date` (ISO format `YYYY-MM-DD` or `DD/MM` for recurring annual holidays), and `holiday_name`
+- Optional columns: `type` (use `holiday` for overrides), `date` (ISO format `YYYY-MM-DD`, or `MM-DD`/`DD-MM` for recurring annual holidays), and `holiday_name`
 - Separate multiple photo URLs in `photo_urls` with the `|` character
+- For multi-day holidays list each date in the `date` column separated by `|`; when the first value includes a year, subsequent `MM-DD` values reuse that year automatically
 - Valid time slots: `morning`, `noon`, `evening`, `night`, or `all` (applies to every slot)
 - Publish the sheet tab to the web as CSV, similar to the messages sheet
 
