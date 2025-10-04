@@ -98,12 +98,46 @@ function normalizeDateString(rawValue, referenceYear) {
     return trimmed;
   }
 
-  const dayMonthMatch = trimmed.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{4}))?$/);
+  const dayMonthMatch = trimmed.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?$/);
   if (dayMonthMatch) {
-    const day = dayMonthMatch[1].padStart(2, '0');
-    const month = dayMonthMatch[2].padStart(2, '0');
-    const year = (dayMonthMatch[3] || referenceYear).padStart(4, '0');
-    return `${year}-${month}-${day}`;
+    const firstPart = parseInt(dayMonthMatch[1], 10);
+    const secondPart = parseInt(dayMonthMatch[2], 10);
+    const hasYear = Boolean(dayMonthMatch[3]);
+
+    let month = firstPart;
+    let day = secondPart;
+
+    if (firstPart > 12 && secondPart <= 12) {
+      month = secondPart;
+      day = firstPart;
+    } else if (secondPart > 12 && firstPart <= 12) {
+      month = firstPart;
+      day = secondPart;
+    } else if (firstPart > 12 && secondPart > 31) {
+      console.warn(`normalizeDateString(): Unable to parse date value "${rawValue}"`);
+      return null;
+    }
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      console.warn(`normalizeDateString(): Unable to parse date value "${rawValue}"`);
+      return null;
+    }
+
+    let year = hasYear ? dayMonthMatch[3] : referenceYear;
+    if (!year) {
+      year = referenceYear;
+    }
+
+    if (year && year.length === 2) {
+      const numericYear = parseInt(year, 10);
+      year = (numericYear >= 70 ? 1900 + numericYear : 2000 + numericYear).toString();
+    }
+
+    const monthStr = month.toString().padStart(2, '0');
+    const dayStr = day.toString().padStart(2, '0');
+    const yearStr = (year || referenceYear || '').toString().padStart(4, '0');
+
+    return `${yearStr}-${monthStr}-${dayStr}`;
   }
 
   const parsedDate = new Date(trimmed);
@@ -121,10 +155,97 @@ function parseDateList(rawValue) {
   }
 
   const currentYear = new Date().getFullYear().toString();
-  return rawValue
-    .split('|')
-    .map(value => normalizeDateString(value, currentYear))
+  let lastYear = null;
+  let lastDate = null;
+
+  const segments = rawValue.split('|');
+
+  const parsedDates = segments
+    .map((value, index) => {
+      if (!value) {
+        return null;
+      }
+
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return null;
+      }
+
+      const hasExplicitYear = /\d{4}/.test(trimmed);
+      const defaultYear = hasExplicitYear ? null : (lastYear || currentYear);
+      const normalizedValue = normalizeDateString(trimmed, defaultYear);
+
+      if (!normalizedValue) {
+        console.debug('[parseDateList] Unable to normalize segment', {
+          segmentIndex: index,
+          rawSegment: value,
+          trimmedSegment: trimmed,
+          defaultYear
+        });
+        return null;
+      }
+
+      let isoString = normalizedValue;
+      let isoDate = new Date(`${normalizedValue}T00:00:00Z`);
+
+      if (Number.isNaN(isoDate.getTime())) {
+        isoDate = new Date(normalizedValue);
+      }
+
+      let rolledForward = false;
+
+      if (!Number.isNaN(isoDate.getTime())) {
+        if (!hasExplicitYear && lastDate) {
+          const lastTime = Date.UTC(
+            lastDate.getUTCFullYear(),
+            lastDate.getUTCMonth(),
+            lastDate.getUTCDate()
+          );
+          const currentTime = Date.UTC(
+            isoDate.getUTCFullYear(),
+            isoDate.getUTCMonth(),
+            isoDate.getUTCDate()
+          );
+
+          if (currentTime < lastTime) {
+            isoDate.setUTCFullYear(isoDate.getUTCFullYear() + 1);
+            isoString = isoDate.toISOString().split('T')[0];
+            rolledForward = true;
+          }
+        }
+
+        lastDate = isoDate;
+        lastYear = isoDate.getUTCFullYear().toString();
+      } else {
+        const normalizedYearMatch = normalizedValue.match(/^(\d{4})-/);
+        if (normalizedYearMatch) {
+          lastYear = normalizedYearMatch[1];
+        }
+      }
+
+      console.debug('[parseDateList] Normalized segment', {
+        segmentIndex: index,
+        rawSegment: value,
+        trimmedSegment: trimmed,
+        normalizedValue,
+        isoString,
+        hasExplicitYear,
+        defaultYear,
+        rolledForward,
+        lastYear
+      });
+
+      return isoString;
+    })
     .filter(Boolean);
+
+  console.debug('[parseDateList] Final result', {
+    rawValue,
+    segments,
+    parsedDates
+  });
+
+  return parsedDates;
 }
 
 function parsePhotoUrlList(rawValue) {
