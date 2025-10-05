@@ -233,6 +233,13 @@ table.todo-table .sub-header {
   height: 17%;
 }
 
+.news-stale-notice {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin-bottom: 6px;
+  text-align: right;
+}
+
 .daily-photo {
   top: 20%;	
   right: 30%; 	
