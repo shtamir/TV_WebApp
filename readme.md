@@ -60,6 +60,8 @@ yakinton46/
 5. Customize the city in `weather.js` to your desired location
 6. Configure your photo schedule in the Google Sheet tab referenced by `photoSheetUrl`
 7. Replace the audio file with your preferred background music
+8. (Optional) Start the lightweight RSS proxy with `node server/rssProxy.js` to serve the news feed without CORS issues. Set the `FEED_URL` environment variable to override the default source if needed.
+9. Update the `rssFeedUrl` tab in the shared Google Sheet with the desired RSS source (first cell, first row).
 
 ## Google Sheets Configuration
 
@@ -79,6 +81,11 @@ yakinton46/
 - For multi-day holidays list each date in the `date` column separated by `|`; when the first value includes a year, subsequent `MM-DD` values reuse that year automatically
 - Valid time slots: `morning`, `noon`, `evening`, `night`, or `all` (applies to every slot)
 - Publish the sheet tab to the web as CSV, similar to the messages sheet
+
+### RSS Feed URL Sheet
+- Tab name: `rssFeedUrl`
+- Publish the sheet tab to the web as CSV (same Google Sheet as the other tabs)
+- Enter the desired RSS feed URL in the first column (additional rows are ignored)
 
 ## Deployment Options
 
