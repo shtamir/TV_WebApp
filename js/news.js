@@ -5,7 +5,7 @@ const newsConfig = {
   feedProxyPath: '/rss-proxy',
   fallbackFeedUrl: 'https://rss.walla.co.il/feed/2686',
   feedSheet: {
-    baseUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL',
+    baseUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm_3aSAL3tnmyOHuAXMIc0IF6V3MlR-CmB3rmebHON0V_V3r3ido3hdq2qr_ByTbIayW1AKZjp45IL/pub?gid=349609406&single=true&output=csv',
     tabName: 'rssFeedUrl'
   },
   maxItems: 20, // Maximum items to fetch
