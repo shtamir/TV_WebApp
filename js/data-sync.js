@@ -22,16 +22,18 @@ function fetchMessagesFromGoogleSheet() {
       return response.text();
     })
     .then(data => {
-      const lines = data.split('\n');
-      const messageData = lines
-        .map(line => line.split(',')) // Split each line into columns
+      const rows = parseCsv(data);
+      const messageData = rows
         .slice(0, sheetsConfig.maxMessages) // Take all rows, including the first one
-        .map(row => ({
-          text: row[0]?.trim() || '',         // First column: Message
-          color: row[1]?.trim() || '#000000', // Second column: Text color (default black)
-          fontSize: row[2]?.trim() || '16px'  // Third column: Font size (default 16px)
-        }))
-        .filter(item => item.text.length > 0); // Remove empty messages
+        .map(row => {
+          const text = row[0] ?? '';
+          return {
+            text,                                        // First column: Message
+            color: (row[1] ?? '').trim() || '#000000',   // Second column: Text color (default black)
+            fontSize: (row[2] ?? '').trim() || '16px'    // Third column: Font size (default 16px)
+          };
+        })
+        .filter(item => item.text.trim().length > 0); // Remove empty messages
 
       // Generate HTML
       const messagesHTML = `
@@ -48,6 +50,75 @@ function fetchMessagesFromGoogleSheet() {
       console.error('Error fetching sheet data:', error);
       showError('messagesBox', 'Unable to load messages');
     });
+}
+
+function parseCsv(csvText) {
+  const rows = [];
+  let currentRow = [];
+  let currentValue = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < csvText.length; i += 1) {
+    const char = csvText[i];
+    const nextChar = csvText[i + 1];
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (nextChar === '"') {
+          currentValue += '"';
+          i += 1;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        currentValue += char;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = true;
+      continue;
+    }
+
+    if (char === ',') {
+      currentRow.push(currentValue);
+      currentValue = '';
+      continue;
+    }
+
+    if (char === '\r') {
+      if (nextChar === '\n') {
+        i += 1;
+      }
+      currentRow.push(currentValue);
+      rows.push(currentRow);
+      currentRow = [];
+      currentValue = '';
+      continue;
+    }
+
+    if (char === '\n') {
+      currentRow.push(currentValue);
+      rows.push(currentRow);
+      currentRow = [];
+      currentValue = '';
+      continue;
+    }
+
+    currentValue += char;
+  }
+
+  if (inQuotes) {
+    currentValue += '"';
+  }
+
+  if (currentValue.length > 0 || currentRow.length > 0) {
+    currentRow.push(currentValue);
+    rows.push(currentRow);
+  }
+
+  return rows;
 }
 
 function cloneDefaultPhotoSchedule() {
