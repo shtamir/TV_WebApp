@@ -1,7 +1,7 @@
 const http = require('http');
 const { URL } = require('url');
 
-const DEFAULT_FEED_URL = process.env.FEED_URL || 'https://rss.walla.co.il/feed/2686';
+const DEFAULT_FEED_URL = process.env.FEED_URL || 'https://rss.walla.co.il/feed/13438';
 const PORT = process.env.PORT || 8787;
 
 async function handleRequest(req, res) {
