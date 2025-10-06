@@ -7,6 +7,12 @@ const PORT = process.env.PORT || 8787;
 async function handleRequest(req, res) {
   const requestUrl = new URL(req.url, `http://${req.headers.host}`);
 
+  console.log('[RSS Proxy] Incoming request:', {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin
+  });
+
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
@@ -29,6 +35,8 @@ async function handleRequest(req, res) {
 
   const targetFeed = requestUrl.searchParams.get('url') || DEFAULT_FEED_URL;
 
+  console.log('[RSS Proxy] Resolved target feed:', targetFeed);
+
   try {
     const upstreamResponse = await fetch(targetFeed, {
       headers: {
@@ -36,7 +44,17 @@ async function handleRequest(req, res) {
       }
     });
 
+    console.log('[RSS Proxy] Upstream response received:', {
+      status: upstreamResponse.status,
+      statusText: upstreamResponse.statusText,
+      ok: upstreamResponse.ok,
+      redirected: upstreamResponse.redirected,
+      url: upstreamResponse.url
+    });
+
     const body = await upstreamResponse.text();
+
+    console.log('[RSS Proxy] Upstream response body length:', body.length);
 
     const headers = {
       'Access-Control-Allow-Origin': '*',
@@ -48,13 +66,23 @@ async function handleRequest(req, res) {
 
     res.writeHead(upstreamResponse.status, headers);
     res.end(body);
+
+    console.log('[RSS Proxy] Response forwarded to client with status:', upstreamResponse.status);
   } catch (error) {
-    console.error('Error fetching RSS feed through proxy:', error);
+    console.error('[RSS Proxy] Error fetching RSS feed through proxy:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.writeHead(502, {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     });
     res.end(JSON.stringify({ error: 'Failed to fetch RSS feed' }));
+
+    if (error.cause) {
+      console.error('[RSS Proxy] Error cause:', error.cause);
+    }
   }
 }
 
