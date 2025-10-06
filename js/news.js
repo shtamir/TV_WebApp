@@ -382,7 +382,27 @@ function resolveFeedSheetCsvUrl() {
     return newsConfig.feedSheet._resolvingPromise;
   }
 
-  const pubHtmlUrl = `${newsConfig.feedSheet.baseUrl}/pubhtml`;
+  const trimmedBaseUrl = newsConfig.feedSheet.baseUrl.trim();
+  const explicitCsvUrl = (/output=csv/i.test(trimmedBaseUrl) && /[?&]gid=/i.test(trimmedBaseUrl))
+    ? trimmedBaseUrl
+    : null;
+  const normalizedBaseUrl = getNormalizedSheetBaseUrl(trimmedBaseUrl);
+
+  if (!normalizedBaseUrl) {
+    console.error('Unable to normalize Google Sheet base URL for RSS feed configuration.', {
+      feedSheetConfig: newsConfig.feedSheet
+    });
+    if (explicitCsvUrl) {
+      console.warn('Falling back to explicitly configured CSV URL for RSS feed.', {
+        explicitCsvUrl
+      });
+      newsConfig.feedSheet.csvUrl = explicitCsvUrl;
+      return Promise.resolve(explicitCsvUrl);
+    }
+    return Promise.resolve(null);
+  }
+
+  const pubHtmlUrl = `${normalizedBaseUrl}/pubhtml`;
   const sheetNamePattern = newsConfig.feedSheet.tabName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   newsConfig.feedSheet._resolvingPromise = fetch(pubHtmlUrl)
@@ -398,7 +418,7 @@ function resolveFeedSheetCsvUrl() {
 
       if (match && match[1]) {
         const gid = match[1];
-        const csvUrl = `${newsConfig.feedSheet.baseUrl}/pub?gid=${gid}&single=true&output=csv`;
+        const csvUrl = `${normalizedBaseUrl}/pub?gid=${gid}&single=true&output=csv`;
         newsConfig.feedSheet.csvUrl = csvUrl;
         return csvUrl;
       }
@@ -406,6 +426,13 @@ function resolveFeedSheetCsvUrl() {
       console.error(`Unable to find Google Sheet tab "${newsConfig.feedSheet.tabName}" while resolving CSV URL.`, {
         htmlSnippet: html.slice(0, 200)
       });
+      if (explicitCsvUrl) {
+        console.warn('Falling back to explicitly configured CSV URL after failing to resolve by tab name.', {
+          explicitCsvUrl
+        });
+        newsConfig.feedSheet.csvUrl = explicitCsvUrl;
+        return explicitCsvUrl;
+      }
       return null;
     })
     .finally(() => {
@@ -413,6 +440,29 @@ function resolveFeedSheetCsvUrl() {
     });
 
   return newsConfig.feedSheet._resolvingPromise;
+}
+
+function getNormalizedSheetBaseUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    return '';
+  }
+
+  let normalized = rawUrl.trim();
+  if (!normalized) {
+    return '';
+  }
+
+  // Remove any published CSV/HTML suffixes and query parameters to obtain the sheet base path.
+  normalized = normalized.replace(/\/pub(?:html)?(?:\?.*)?$/i, '');
+  const queryIndex = normalized.indexOf('?');
+  if (queryIndex !== -1) {
+    normalized = normalized.substring(0, queryIndex);
+  }
+
+  // Trim trailing slashes to keep URL construction predictable.
+  normalized = normalized.replace(/\/+$/, '');
+
+  return normalized;
 }
 
 function extractFirstCellFromCsvLine(line) {
