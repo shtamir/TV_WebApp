@@ -125,7 +125,7 @@ function updateResolution() {
 document.addEventListener('DOMContentLoaded', updateResolution);*/
 //
 // Compare this snippet from js/data-sync.js:
-window.addEventListener('resize', updateResolution);
+//window.addEventListener('resize', updateResolution);
 
 // Check for Admin presence
 function checkForAdminPresence() {
