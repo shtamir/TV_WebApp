@@ -55,8 +55,47 @@ const photoSchedule_regular = {
   },
 };
 
-// Configuration for Yom-Kipur
+// sukkout
 const photoSchedule = {
+  "Sunday": {
+    "morning": ["images/carousel/morning_03.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/sunday_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/sunday_01.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"]
+  },
+  "Monday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/morning_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/default.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"]
+  },
+  "Tuesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/morning_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/default.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"]
+  },
+  "Wednesday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/morning_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/default.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"] 
+   },
+  "Thursday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/morning_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/default.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"]
+  },
+  "Friday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/morning_02.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/default.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
+    "evening": ["images/carousel/holydays/sukkot/pic5.jpg","images/carousel/israel_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg", "images/carousel/weekend_01.jpg"]
+  },
+  "Saturday": {
+    "morning": ["images/carousel/morning_04.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/weekend_01.jpg"],
+    "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/weekend_01.jpg"],
+    "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/holydays/sukkot/pic5.jpg", "images/carousel/weekend_01.jpg", "images/carousel/holydays/sukkot/pic6.jpg"]
+  },
+};
+
+// Configuration for Yom-Kipur
+const photoSchedule_yum_kipur = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
