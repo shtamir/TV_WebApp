@@ -17,7 +17,7 @@
 }; */
 
 // Configuration for day-wise and time-wise photo display
-const photoSchedule_regular = {
+const photoSchedule = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -56,7 +56,7 @@ const photoSchedule_regular = {
 };
 
 // sukkout
-const photoSchedule = {
+const photoSchedule_sukkout = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/holydays/sukkot/pic1.jpg", "images/carousel/sunday_01.jpg", "images/carousel/holydays/sukkot/pic2.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/holydays/sukkot/pic3.jpg", "images/carousel/sunday_01.jpg", "images/carousel/holydays/sukkot/pic4.jpg"],
