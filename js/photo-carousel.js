@@ -299,10 +299,16 @@ const photoSchedule = {
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/default.jpg"],
     "evening": ["images/carousel/goodevening_01.jpg", "images/carousel/israel_01.jpg"]
   },
+  /*
   "Tuesday": {
     "morning": ["images/carousel/holydays/memorial_day/1.jpg"],
     "noon": ["images/carousel/holydays/memorial_day/1.jpg"],
     "evening": ["images/carousel/holydays/memorial_day/1.jpg"]
+  },*/
+  "Tuesday": {
+    "morning": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
+    "noon": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
+    "evening": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"]
   },
   "Wednesday": {
     "morning": ["images/carousel/holydays/independence_day/1.jpg", "images/carousel/holydays/independence_day/2.jpg", "images/carousel/holydays/independence_day/3.jpg"],
