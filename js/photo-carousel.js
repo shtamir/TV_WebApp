@@ -17,7 +17,8 @@
 }; */
 
 // Configuration for day-wise and time-wise photo display
-const photoSchedule_regular = {
+// photoSchedule_regular
+const photoSchedule = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
@@ -288,7 +289,7 @@ photoSchedule_holocaust = {
 };
 
 // photoSchedule_memorial_day
-const photoSchedule = {
+const photoSchedule_memorial_day = {
   "Sunday": {
     "morning": ["images/carousel/morning_03.gif", "images/carousel/sunday_01.jpg"],
     "noon": ["images/carousel/goodday_01.jpg", "images/carousel/sunday_01.jpg"],
